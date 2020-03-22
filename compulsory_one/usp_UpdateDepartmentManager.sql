@@ -6,8 +6,10 @@ AS
 BEGIN
     IF @MgrSSN <> (SELECT MgrSSN FROM Department WHERE DNumber = @DNumber)
         BEGIN
-            UPDATE Department SET MgrSSN = @MgrSSN WHERE DNumber = @DNumber;
-            UPDATE Employee SET SuperSSN = @MgrSSN WHERE Dno = @DNumber AND SSN <> @MgrSSN;
+            BEGIN TRANSACTION
+                UPDATE Department SET MgrSSN = @MgrSSN WHERE DNumber = @DNumber;
+                UPDATE Employee SET SuperSSN = @MgrSSN WHERE Dno = @DNumber AND SSN <> @MgrSSN;
+            COMMIT
         END
     ELSE
         THROW 50001, 'Employee is already the department manager', 1;
