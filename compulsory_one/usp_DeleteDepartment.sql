@@ -1,31 +1,31 @@
-CREATE PROCEDURE usp_DeleteDepartment(
+CREATE PROCEDURE dbo.usp_DeleteDepartment(
     @DNumber NUMERIC(9,0)
 )
 AS
 BEGIN
-    IF EXISTS (SELECT DNumber FROM Company.dbo.Department WHERE DNumber = @DNumber)
+    IF EXISTS (SELECT DNumber FROM Department WHERE DNumber = @DNumber)
         BEGIN
-            DELETE FROM Company.dbo.Department WHERE DNumber = @DNumber;
+            DELETE FROM Department WHERE DNumber = @DNumber;
             
-            DELETE FROM Company.dbo.Dept_Locations WHERE DNumber = @DNumber;
+            DELETE FROM Dept_Locations WHERE DNumber = @DNumber;
 
             DECLARE @DepartmentProjects TABLE(PNumber NUMERIC(9,0) NOT NULL);
             
             INSERT INTO @DepartmentProjects (PNumber)
             SELECT PNumber 
-            FROM Company.dbo.Project
+            FROM Project
             WHERE DNum = @DNumber;
             
-            DELETE FROM Company.dbo.Project WHERE DNum = @DNumber;
+            DELETE FROM Project WHERE DNum = @DNumber;
             
-            DELETE FROM Company.dbo.Works_on 
+            DELETE FROM Works_on 
             WHERE EXISTS (
                 SELECT * 
                 FROM @DepartmentProjects 
-                JOIN Company.dbo.Works_on ON PNumber = Pno 
+                JOIN Works_on ON PNumber = Pno 
             );
 
-            UPDATE Company.dbo.Employee SET Dno = NULL WHERE Dno = @DNumber;
+            UPDATE Employee SET Dno = NULL WHERE Dno = @DNumber;
         END
     ELSE
         THROW 50001, 'Department does not exist', 1;
