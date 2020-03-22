@@ -14,4 +14,4 @@ The scripts expect several environment variables as input:
 | DB_USER | Database login username |
 | DB_PWD | Database login password |
 
-Input to scripts is provided using arguments (e.g. `python mssql-cli.delete_department [department_number]`, being `[department_number]` an argument passed to the script). 
+Input to scripts is provided using arguments (e.g. `python -m mssql-cli.delete_department [department_number]`, being `[department_number]` an argument passed to the script). 
